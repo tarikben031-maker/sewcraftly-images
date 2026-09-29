@@ -127,21 +127,28 @@ def style_split():
 
     # ---- title block ----
     meta = f"{A.code}" + (f"  ·  {A.level.upper()}" if A.level else '')
-    ctext(d, 880, meta, POP('SemiBold', 26), spacing=4)
+    ctext(d, 872, meta, POP('SemiBold', 26), spacing=4)
     lines = [A.keyword, A.line2] if A.keyword else split_title(d, A.name, ROZHA, 940)
-    tf = autosize(d, lines, ROZHA, 940, 104 if len(lines) == 2 else 110)
-    y = 915
+    tf = autosize(d, lines, ROZHA, 880, 100 if len(lines) == 2 else 110)
+    y = 905
     for ln in lines:
         ctext(d, y, ln, tf); y += int(tf.size * 1.02)
-    ctext(d, y + 34, f"Sizes {A.sizes}  ·  A4 · US Letter · A0", POP('Medium', 30))
+    ctext(d, y + 22, f"Sizes {A.sizes}  ·  A4 · US Letter · A0", POP('Medium', 30))
 
     # ---- footer: logo + link in bio ----
-    fy = 1215
+    fy = 1228
     lw = 250; lh = int(LOGO.height * lw / LOGO.width)
-    im.alpha_composite(LOGO.resize((lw, lh), Image.LANCZOS), (96, fy + (80 - lh) // 2))
-    lf = POP('SemiBold', 26); t = 'Link in bio  ·  sewcraftly.com'; tw = d.textlength(t, font=lf)
-    d.rounded_rectangle((W - 96 - tw - 60, fy + 8, W - 96, fy + 72), radius=32, fill=BAND)
-    d.text((W - 96 - tw - 30, fy + 8 + (64 - lf.size * 1.42) / 2), t, font=lf, fill=K)
+    im.alpha_composite(LOGO.resize((lw, lh), Image.LANCZOS), (96, fy + 6 + (84 - lh) // 2))
+    # CTA: small "FREE DOWNLOAD · LINK IN BIO" over a black pill with sewcraftly.com and an arrow
+    lf = POP('Bold', 34); t = 'sewcraftly.com'; tw = d.textlength(t, font=lf)
+    ph_, aw_ = 84, 30; px1 = W - 96; px0 = px1 - (tw + aw_ + 22 + 72)
+    py0 = fy + 6
+    d.rounded_rectangle((px0, py0, px1, py0 + ph_), radius=ph_ // 2, fill=K)
+    tx = px0 + 36; d.text((tx, py0 + (ph_ - lf.size * 1.42) / 2), t, font=lf, fill='white')
+    ax = tx + tw + 22; ay = py0 + ph_ // 2  # arrow pointing up-right
+    d.line((ax, ay + 12, ax + 24, ay - 12), fill=BAND, width=5)
+    d.line((ax + 8, ay - 12, ax + 25, ay - 12), fill=BAND, width=5); d.line((ax + 24, ay - 13, ax + 24, ay + 4), fill=BAND, width=5)
+    ctext(d, fy - 30, 'FREE DOWNLOAD  ·  LINK IN BIO', POP('SemiBold', 20), cx=(px0 + px1) // 2, spacing=3, fill=(70, 70, 70))
 
     return im
 
