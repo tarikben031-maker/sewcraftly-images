@@ -136,19 +136,19 @@ def style_split():
     ctext(d, y + 22, f"Sizes {A.sizes}  ·  A4 · US Letter · A0", POP('Medium', 30))
 
     # ---- footer: logo + link in bio ----
-    fy = 1228
+    fy = 1218
     lw = 250; lh = int(LOGO.height * lw / LOGO.width)
     im.alpha_composite(LOGO.resize((lw, lh), Image.LANCZOS), (96, fy + 6 + (84 - lh) // 2))
-    # CTA: small "FREE DOWNLOAD · LINK IN BIO" over a black pill with sewcraftly.com and an arrow
-    lf = POP('Bold', 34); t = 'sewcraftly.com'; tw = d.textlength(t, font=lf)
-    ph_, aw_ = 84, 30; px1 = W - 96; px0 = px1 - (tw + aw_ + 22 + 72)
-    py0 = fy + 6
-    d.rounded_rectangle((px0, py0, px1, py0 + ph_), radius=ph_ // 2, fill=K)
-    tx = px0 + 36; d.text((tx, py0 + (ph_ - lf.size * 1.42) / 2), t, font=lf, fill='white')
-    ax = tx + tw + 22; ay = py0 + ph_ // 2  # arrow pointing up-right
-    d.line((ax, ay + 12, ax + 24, ay - 12), fill=BAND, width=5)
-    d.line((ax + 8, ay - 12, ax + 25, ay - 12), fill=BAND, width=5); d.line((ax + 24, ay - 13, ax + 24, ay + 4), fill=BAND, width=5)
-    ctext(d, fy - 30, 'FREE DOWNLOAD  ·  LINK IN BIO', POP('SemiBold', 20), cx=(px0 + px1) // 2, spacing=3, fill=(70, 70, 70))
+    # CTA: band-colour pill, "Link in bio" light + "sewcraftly.com" bold, centred on the logo row
+    f1, f2 = POP('Medium', 24), POP('Bold', 26)
+    t1, sep, t2 = 'Link in bio', '  ·  ', 'sewcraftly.com'
+    w1, ws, w2 = d.textlength(t1, font=f1), d.textlength(sep, font=f1), d.textlength(t2, font=f2)
+    ph_ = 62; px1 = W - 96; px0 = px1 - (w1 + ws + w2 + 64); py0 = fy + 6 + (84 - ph_) // 2
+    d.rounded_rectangle((px0, py0, px1, py0 + ph_), radius=ph_ // 2, fill=BAND)
+    x = px0 + 32; ty = py0 + (ph_ - f2.size * 1.42) / 2
+    d.text((x, ty + 1), t1, font=f1, fill=(55, 55, 55)); x += w1
+    d.text((x, ty + 1), sep, font=f1, fill=(55, 55, 55)); x += ws
+    d.text((x, ty), t2, font=f2, fill=K)
 
     return im
 
