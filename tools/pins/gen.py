@@ -72,14 +72,13 @@ def pin1(out):
     im=noise_bg(CREAM).convert('RGBA'); d=ImageDraw.Draw(im)
     hx0,hy0,hx1,hy1=40,40,960,620
     hero=noise_bg(BAND,(hx1-hx0,hy1-hy0),0.06).convert('RGBA')
-    lay=Image.new('RGBA',hero.size,(0,0,0,0)); hd=ImageDraw.Draw(lay)
-    for x in range(-400,1400,150): hd.polygon([(x,0),(x+40,0),(x-300,hero.height),(x-340,hero.height)],fill=(255,255,255,40))
-    hero.alpha_composite(lay); im.alpha_composite(hero,(hx0,hy0))
+    im.alpha_composite(hero,(hx0,hy0))
     s=fit(sticker,820,540); shadowed(im,s,(W//2-s.width//2,hy0+(hy1-hy0-s.height)//2))
-    d.text((hx0,hy1+14),f"THE {A.name.upper()}  ·  {A.code}",font=POP('Medium',20),fill=(60,60,60))
+    ct=f"THE {A.name.upper()}  ·  {A.code}"; cf=autosize(d,[ct],lambda z:POP('SemiBold',z),900,28)
+    d.text((hx0,hy1+12),ct,font=cf,fill=K)
     l1,l2=f"FREE {G}",'SEWING PATTERN'
     tf=autosize(d,[l1,l2],ROZHA,860,120)
-    ctext(d,700,l1,tf); ctext(d,700+tf.size,l2,tf)
+    ctext(d,705,l1,tf); ctext(d,705+tf.size,l2,tf)
     y0,y1=985,1370
     card=Image.new('RGBA',(430,y1-y0),(255,255,255,255))
     lh=logo(card,(18,14),190)
@@ -99,16 +98,23 @@ def pin1(out):
 
 def pin2(out):
     im=Image.new('RGBA',(W,H),(255,255,255,255)); d=ImageDraw.Draw(im)
-    logo(im,(50,36),400)
-    pf=POP('SemiBold',26); t='FREE PDF'; tw=d.textlength(t,font=pf)
-    d.rounded_rectangle((W-60-tw-50,62,W-60,122),radius=30,fill=K); d.text((W-60-tw-25,72),t,font=pf,fill='white')
-    ctext(d,215,f"{A.name.upper()}  ·  {A.code}",POP('Medium',22),fill=(90,90,90),spacing=3)
-    s=fit(sticker,860,790); im.alpha_composite(s,(W//2-s.width//2,272+(790-s.height)//2))
+    logo(im,(40,40),380)
+    pf=POP('Bold',30); t='FREE PDF DOWNLOAD'; tw=d.textlength(t,font=pf)
+    ih=30; gap=16; bw=tw+ih+gap+56; bh=78; x1=W-44; x0=x1-bw; y0=58
+    d.rounded_rectangle((x0,y0,x1,y0+bh),radius=bh//2,fill=K)
+    ax=x0+28+ih//2; ay=y0+bh//2
+    d.line((ax,ay-15,ax,ay+5),fill='white',width=5)
+    d.polygon([(ax-11,ay-1),(ax+11,ay-1),(ax,ay+11)],fill='white')
+    d.line((ax-13,ay+16,ax+13,ay+16),fill='white',width=4)
+    d.text((x0+28+ih+gap,y0+(bh-pf.size*1.42)/2),t,font=pf,fill='white')
+    nt=f"{A.name.upper()}  ·  {A.code}"; nf=autosize(d,[nt],lambda z:POP('SemiBold',z),860,32)
+    ctext(d,206,nt,nf,fill=K,spacing=2)
+    s=fit(sticker,860,780); im.alpha_composite(s,(W//2-s.width//2,272+(790-s.height)//2))
     by=1080; d.rectangle((0,by,W,H),fill=BAND)
     t=f"FREE {G} SEWING PATTERN"; tf=autosize(d,[t],ANTON,880,96); ctext(d,by+40+(96-tf.size)//2,t,tf)
     sub=POP('SemiBold',34); t='+ Step-by-Step Instructions'; tw=d.textlength(t,font=sub)
     d.rounded_rectangle((W//2-tw/2-36,by+170,W//2+tw/2+36,by+238),radius=34,fill=(255,255,255)); ctext(d,by+180,t,sub)
-    ctext(d,by+262,f"Sizes {A.sizes}"+(f"  ·  {A.level}" if A.level else ''),POP('Italic',30))
+    ctext(d,by+255,f"Sizes {A.sizes}"+(f"  ·  {A.level}" if A.level else ''),POP('SemiBoldItalic',38))
     d.line((W//2-45,by+328,W//2+45,by+328),fill=K,width=4)
     ctext(d,by+344,'sewcraftly.com',POP('Medium',30),spacing=4)
     im.convert('RGB').save(out,quality=92)
