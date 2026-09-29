@@ -13,9 +13,8 @@
 .sc-find .sc-chips a{display:inline-block;padding:7px 14px;border:1.5px solid #eadbd0;border-radius:999px;background:#fff;color:var(--ink)!important;font-size:14px!important;font-weight:600;text-decoration:none!important;line-height:1.2;transition:all .2s}
 .sc-find .sc-chips a:hover{border-color:var(--acc);background:var(--acc);color:#fff!important}
 </style>
-<span class="sc-find-title">Find your next pattern</span>
-<span class="sc-find-sub">Search or pick a garment to start.</span>
 <form role="search" method="get" action="/"><label class="screen-reader-text" for="sc-find-s">Search patterns</label><input id="sc-find-s" type="search" name="s" placeholder="Dress, shorts, top&hellip;" /><button type="submit" aria-label="Search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button></form>
 <span class="sc-find-label">Browse by garment</span>
 <div class="sc-chips"><a href="/category/women/dresses/">Dresses</a><a href="/category/women/shorts/">Shorts</a></div>
 </div>
+<script>(function(){function a(){var s=document.getElementById('secondary');if(!s)return;s.style.marginTop='';if(!document.body.classList.contains('single-post')||window.innerWidth<1024)return;var art=document.querySelector('article.post');if(!art)return;var im=null,L=art.querySelectorAll('img');for(var i=0;i<L.length;i++){var r=L[i].getBoundingClientRect();if(r.height>150&&r.width>300){im=L[i];break;}}if(!im)return;var d=im.getBoundingClientRect().top-s.getBoundingClientRect().top;if(d>0&&d<500)s.style.marginTop=d+'px';}document.addEventListener('DOMContentLoaded',a);window.addEventListener('load',a);window.addEventListener('resize',a);})();</script>
