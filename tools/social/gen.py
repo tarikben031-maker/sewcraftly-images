@@ -20,6 +20,8 @@ ap.add_argument('--level', default=''); ap.add_argument('--photo', default=None)
 ap.add_argument('--style', default='split', choices=['split', 'photo', 'sketch'])
 ap.add_argument('--fabric', default='')
 ap.add_argument('--keyword', default='', help='search keyword shown as the headline, e.g. "Maxi Slip Dress"; the second line is always "Sewing Pattern"')
+ap.add_argument('--line2', default='Free Sewing Pattern')
+ap.add_argument('--badge', default='PDF + STEP-BY-STEP')
 ap.add_argument('--axes', default='', help='"FRONT_X,BACK_X": centre lines of the front (left) and back (right) sketch inside the cover sticker; each is rebuilt by mirroring its visible half so they no longer overlap')
 ap.add_argument('--front', default=None); ap.add_argument('--back', default=None)
 ap.add_argument('--out', required=True); ap.add_argument('--fonts', default='gf/ofl')
@@ -118,7 +120,7 @@ def style_split():
         shadowed(im, s, (W // 2 - s.width // 2, hy0 + (hy1 - hy0 - s.height) // 2))
 
     # "FREE PDF PATTERN" badge, overlapping the bottom edge of the hero
-    bf = POP('Bold', 30); t = 'FREE PDF PATTERN'; tw = d.textlength(t, font=bf); bh = 70
+    bf = POP('Bold', 30); t = A.badge; tw = d.textlength(t, font=bf); bh = 70
     bx0 = W // 2 - tw / 2 - 40; by0 = hy1 - bh // 2
     d.rounded_rectangle((bx0, by0, W // 2 + tw / 2 + 40, by0 + bh), radius=bh // 2, fill=K)
     d.text((W // 2 - tw / 2, by0 + (bh - bf.size * 1.42) / 2), t, font=bf, fill='white')
@@ -126,7 +128,7 @@ def style_split():
     # ---- title block ----
     meta = f"{A.code}" + (f"  ·  {A.level.upper()}" if A.level else '')
     ctext(d, 880, meta, POP('SemiBold', 26), spacing=4)
-    lines = [A.keyword, 'Sewing Pattern'] if A.keyword else split_title(d, A.name, ROZHA, 940)
+    lines = [A.keyword, A.line2] if A.keyword else split_title(d, A.name, ROZHA, 940)
     tf = autosize(d, lines, ROZHA, 940, 104 if len(lines) == 2 else 110)
     y = 915
     for ln in lines:
