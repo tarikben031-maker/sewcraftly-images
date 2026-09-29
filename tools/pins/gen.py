@@ -103,8 +103,8 @@ def pin1(out):
     ctext(d,705,l1,tf); ctext(d,705+tf.size,l2,tf)
     y0,y1=985,1370
     card=Image.new('RGBA',(430,y1-y0),(255,255,255,255))
-    lh=logo(card,(18,14),190)
-    sk=fit(sticker,380,card.height-lh-40); card.alpha_composite(sk,(card.width//2-sk.width//2,lh+26))
+    lw=370; lh=int(LOGO.height*lw/LOGO.width)
+    logo(card,((card.width-lw)//2,(card.height-lh)//2),lw)
     shadowed(im,card,(60,y0),off=(4,6),blur=8,alpha=60)
     if A.detail:
         det=cover_crop(Image.open(A.detail).convert('RGB'),430,y1-y0,0.55).convert('RGBA')
