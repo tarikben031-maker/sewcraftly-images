@@ -19,6 +19,9 @@ ap.add_argument('--code', required=True); ap.add_argument('--sizes', default='XX
 ap.add_argument('--level', default=''); ap.add_argument('--photo', default=None)
 ap.add_argument('--style', default='split', choices=['split', 'photo', 'sketch'])
 ap.add_argument('--fabric', default='')
+ap.add_argument('--keyword', default='', help='search keyword shown as the headline, e.g. "Maxi Slip Dress"; the second line is always "Sewing Pattern"')
+ap.add_argument('--axes', default='', help='"FRONT_X,BACK_X": centre lines of the front (left) and back (right) sketch inside the cover sticker; each is rebuilt by mirroring its visible half so they no longer overlap')
+ap.add_argument('--front', default=None); ap.add_argument('--back', default=None)
 ap.add_argument('--out', required=True); ap.add_argument('--fonts', default='gf/ofl')
 ap.add_argument('--logo', default=os.path.join(HERE, '..', '..', 'brand', 'sewcraftly-logo.png'))
 A = ap.parse_args()
@@ -41,6 +44,19 @@ inside = fl.point(lambda v: 0 if v == 128 else 255).filter(ImageFilter.MinFilter
 sticker = reg.copy(); sticker.putalpha(inside); sticker = sticker.crop(inside.point(lambda v: 255 if v > 128 else 0).getbbox())
 strip = cov.crop((1165, 5, 1195, 795)); px = list(strip.get_flattened_data() if hasattr(strip, 'get_flattened_data') else strip.getdata())
 BAND = tuple(int(statistics.median(c[i] for c in px)) for i in range(3))
+
+def _mirror(im, ax, keep_left):
+    half = im.crop((0, 0, ax, im.height)) if keep_left else im.crop((ax, 0, im.width, im.height))
+    out = Image.new('RGBA', (2 * half.width, im.height))
+    if keep_left: out.paste(half, (0, 0)); out.paste(half.transpose(Image.FLIP_LEFT_RIGHT), (half.width, 0))
+    else: out.paste(half.transpose(Image.FLIP_LEFT_RIGHT), (0, 0)); out.paste(half, (half.width, 0))
+    return out.crop(out.getbbox())
+PAIR = None
+if A.front and A.back:
+    PAIR = [Image.open(A.front).convert('RGBA'), Image.open(A.back).convert('RGBA')]
+elif A.axes:
+    fx, bx = [int(v) for v in A.axes.split(',')]
+    PAIR = [_mirror(sticker, fx, True), _mirror(sticker, bx, False)]
 
 def fit(img, mw, mh):
     s = min(mw / img.width, mh / img.height); return img.resize((int(img.width * s), int(img.height * s)), Image.LANCZOS)
@@ -81,8 +97,16 @@ def style_split():
         pw = 470
         ph = cover_crop(Image.open(A.photo).convert('RGB'), pw, hy1 - hy0, 0.35)
         im.paste(ph, (hx0, hy0))
-        s = fit(sticker, hx1 - hx0 - pw - 50, hy1 - hy0 - 90)
-        shadowed(im, s, (hx0 + pw + (hx1 - hx0 - pw - s.width) // 2, hy0 + (hy1 - hy0 - s.height) // 2))
+        if PAIR:
+            aw, ah, gap = hx1 - hx0 - pw - 50, hy1 - hy0 - 100, 14
+            sc = min((aw - gap) / (PAIR[0].width + PAIR[1].width), ah / max(p.height for p in PAIR))
+            ps = [p.resize((int(p.width * sc), int(p.height * sc)), Image.LANCZOS) for p in PAIR]
+            tw = ps[0].width + gap + ps[1].width; x = hx0 + pw + (hx1 - hx0 - pw - tw) // 2
+            base = hy0 + (hy1 - hy0 + max(p.height for p in ps)) // 2 - 12
+            for p in ps: shadowed(im, p, (x, base - p.height)); x += p.width + gap
+        else:
+            s = fit(sticker, hx1 - hx0 - pw - 50, hy1 - hy0 - 90)
+            shadowed(im, s, (hx0 + pw + (hx1 - hx0 - pw - s.width) // 2, hy0 + (hy1 - hy0 - s.height) // 2))
     else:
         s = fit(sticker, hx1 - hx0 - 120, hy1 - hy0 - 100)
         shadowed(im, s, (W // 2 - s.width // 2, hy0 + (hy1 - hy0 - s.height) // 2))
@@ -96,7 +120,7 @@ def style_split():
     # ---- title block ----
     meta = f"{A.code}" + (f"  ·  {A.level.upper()}" if A.level else '')
     ctext(d, 880, meta, POP('SemiBold', 26), spacing=4)
-    lines = split_title(d, A.name, ROZHA, 940)
+    lines = [A.keyword, 'Sewing Pattern'] if A.keyword else split_title(d, A.name, ROZHA, 940)
     tf = autosize(d, lines, ROZHA, 940, 104 if len(lines) == 2 else 110)
     y = 915
     for ln in lines:
