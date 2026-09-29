@@ -18,6 +18,7 @@ ap.add_argument('--cover',required=True); ap.add_argument('--name',required=True
 ap.add_argument('--garment',required=True); ap.add_argument('--code',required=True)
 ap.add_argument('--sizes',default='XXS–4XL'); ap.add_argument('--level',default='')
 ap.add_argument('--out',required=True); ap.add_argument('--fonts',default='gf/ofl')
+ap.add_argument('--photo',default=None); ap.add_argument('--detail',default=None)
 ap.add_argument('--logo',default=os.path.join(HERE,'..','..','brand','sewcraftly-logo.png'))
 A=ap.parse_args()
 
@@ -68,12 +69,33 @@ def pill(d,cx,y,text,font,fill=K,tc='white',padx=36,h=None):
 
 G=A.garment.upper()
 
+def extend_photo(ph,w,h):
+    # scale photo to panel height, extend sides by stretching edge columns then blurring them
+    p=ph.resize((int(ph.width*h/ph.height),h),Image.LANCZOS)
+    if p.width>=w: x=(p.width-w)//2; return p.crop((x,0,x+w,h))
+    bg=Image.new('RGB',(w,h)); x0=(w-p.width)//2
+    bg.paste(p.crop((0,0,6,h)).resize((x0+6,h)),(0,0)); bg.paste(p.crop((p.width-6,0,p.width,h)).resize((w-x0-p.width+6,h)),(x0+p.width-6,0))
+    bg=bg.filter(ImageFilter.GaussianBlur(18))
+    m=Image.new('L',p.size,255); md=ImageDraw.Draw(m)
+    for i in range(40): md.line((i,0,i,h),fill=int(255*i/40)); md.line((p.width-1-i,0,p.width-1-i,h),fill=int(255*i/40))
+    bg.paste(p,(x0,0),m); return bg
+def cover_crop(ph,w,h,fy=0.5):
+    s=max(w/ph.width,h/ph.height); p=ph.resize((int(ph.width*s)+1,int(ph.height*s)+1),Image.LANCZOS)
+    x=(p.width-w)//2; y=int((p.height-h)*fy); return p.crop((x,y,x+w,y+h))
+
 def pin1(out):
     im=noise_bg(CREAM).convert('RGBA'); d=ImageDraw.Draw(im)
     hx0,hy0,hx1,hy1=40,40,960,620
-    hero=noise_bg(BAND,(hx1-hx0,hy1-hy0),0.06).convert('RGBA')
-    im.alpha_composite(hero,(hx0,hy0))
-    s=fit(sticker,820,540); shadowed(im,s,(W//2-s.width//2,hy0+(hy1-hy0-s.height)//2))
+    if A.photo:
+        hero=noise_bg(BAND,(hx1-hx0,hy1-hy0),0.06).convert('RGBA'); im.alpha_composite(hero,(hx0,hy0))
+        ph=Image.open(A.photo).convert('RGB'); ph=ph.resize((int(ph.width*(hy1-hy0)/ph.height),hy1-hy0),Image.LANCZOS)
+        if ph.width>480: ph=cover_crop(ph,480,hy1-hy0)
+        im.paste(ph,(hx0,hy0)); pw=ph.width
+        s=fit(sticker,hx1-hx0-pw-60,520); shadowed(im,s,(hx0+pw+(hx1-hx0-pw-s.width)//2,hy0+(hy1-hy0-s.height)//2))
+    else:
+        hero=noise_bg(BAND,(hx1-hx0,hy1-hy0),0.06).convert('RGBA')
+        im.alpha_composite(hero,(hx0,hy0))
+        s=fit(sticker,820,540); shadowed(im,s,(W//2-s.width//2,hy0+(hy1-hy0-s.height)//2))
     ct=f"THE {A.name.upper()}  ·  {A.code}"; cf=autosize(d,[ct],lambda z:POP('SemiBold',z),900,28)
     d.text((hx0,hy1+12),ct,font=cf,fill=K)
     l1,l2=f"FREE {G}",'SEWING PATTERN'
@@ -84,6 +106,13 @@ def pin1(out):
     lh=logo(card,(18,14),190)
     sk=fit(sticker,380,card.height-lh-40); card.alpha_composite(sk,(card.width//2-sk.width//2,lh+26))
     shadowed(im,card,(60,y0),off=(4,6),blur=8,alpha=60)
+    if A.detail:
+        det=cover_crop(Image.open(A.detail).convert('RGB'),430,y1-y0,0.55).convert('RGBA')
+        dd=ImageDraw.Draw(det); f=POP('SemiBold',18)
+        dd.rounded_rectangle((20,18,20+dd.textlength('DETAILS',font=f)+28,54),radius=18,fill=K); dd.text((34,22),'DETAILS',font=f,fill='white')
+        im.alpha_composite(det,(510,y0))
+        ctext(d,1395,f"Sizes {A.sizes}  ·  PDF  ·  sewcraftly.com",POP('Medium',30))
+        im.convert('RGB').save(out,quality=92); return
     det=noise_bg(BAND,(430,y1-y0),0.06).convert('RGBA')
     top=int(sticker.height*0.42); al=sticker.split()[3].crop((0,0,sticker.width,top))
     cols=[(sum(al.crop((x,0,x+1,top)).get_flattened_data() if hasattr(al,'get_flattened_data') else al.crop((x,0,x+1,top)).getdata()),x) for x in range(int(sticker.width*0.45),int(sticker.width*0.8))]
