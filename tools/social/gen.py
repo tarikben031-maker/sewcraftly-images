@@ -17,6 +17,8 @@ ap = argparse.ArgumentParser()
 ap.add_argument('--cover', required=True); ap.add_argument('--name', required=True)
 ap.add_argument('--code', required=True); ap.add_argument('--sizes', default='XXS–4XL')
 ap.add_argument('--level', default=''); ap.add_argument('--photo', default=None)
+ap.add_argument('--style', default='split', choices=['split', 'photo', 'sketch'])
+ap.add_argument('--fabric', default='')
 ap.add_argument('--out', required=True); ap.add_argument('--fonts', default='gf/ofl')
 ap.add_argument('--logo', default=os.path.join(HERE, '..', '..', 'brand', 'sewcraftly-logo.png'))
 A = ap.parse_args()
@@ -69,44 +71,107 @@ def split_title(d, name, font_maker, maxw):
     one = d.textlength(name, font=font_maker(100))
     return [name] if len(words) < 2 or one * 0.9 < maxw * 100 / 110 else best[1]
 
-im = noise_bg(CREAM).convert('RGBA'); d = ImageDraw.Draw(im)
+def style_split():
+    im = noise_bg(CREAM).convert('RGBA'); d = ImageDraw.Draw(im)
 
-# ---- hero: model photo | sketch on band colour ----
-hx0, hy0, hx1, hy1 = 56, 56, W - 56, 820
-hero = noise_bg(BAND, (hx1 - hx0, hy1 - hy0), 0.06).convert('RGBA'); im.alpha_composite(hero, (hx0, hy0))
-if A.photo:
-    pw = 470
-    ph = cover_crop(Image.open(A.photo).convert('RGB'), pw, hy1 - hy0, 0.35)
-    im.paste(ph, (hx0, hy0))
-    s = fit(sticker, hx1 - hx0 - pw - 50, hy1 - hy0 - 90)
-    shadowed(im, s, (hx0 + pw + (hx1 - hx0 - pw - s.width) // 2, hy0 + (hy1 - hy0 - s.height) // 2))
-else:
-    s = fit(sticker, hx1 - hx0 - 120, hy1 - hy0 - 100)
-    shadowed(im, s, (W // 2 - s.width // 2, hy0 + (hy1 - hy0 - s.height) // 2))
+    # ---- hero: model photo | sketch on band colour ----
+    hx0, hy0, hx1, hy1 = 56, 56, W - 56, 820
+    hero = noise_bg(BAND, (hx1 - hx0, hy1 - hy0), 0.06).convert('RGBA'); im.alpha_composite(hero, (hx0, hy0))
+    if A.photo:
+        pw = 470
+        ph = cover_crop(Image.open(A.photo).convert('RGB'), pw, hy1 - hy0, 0.35)
+        im.paste(ph, (hx0, hy0))
+        s = fit(sticker, hx1 - hx0 - pw - 50, hy1 - hy0 - 90)
+        shadowed(im, s, (hx0 + pw + (hx1 - hx0 - pw - s.width) // 2, hy0 + (hy1 - hy0 - s.height) // 2))
+    else:
+        s = fit(sticker, hx1 - hx0 - 120, hy1 - hy0 - 100)
+        shadowed(im, s, (W // 2 - s.width // 2, hy0 + (hy1 - hy0 - s.height) // 2))
 
-# "FREE PDF PATTERN" badge, overlapping the bottom edge of the hero
-bf = POP('Bold', 30); t = 'FREE PDF PATTERN'; tw = d.textlength(t, font=bf); bh = 70
-bx0 = W // 2 - tw / 2 - 40; by0 = hy1 - bh // 2
-d.rounded_rectangle((bx0, by0, W // 2 + tw / 2 + 40, by0 + bh), radius=bh // 2, fill=K)
-d.text((W // 2 - tw / 2, by0 + (bh - bf.size * 1.42) / 2), t, font=bf, fill='white')
+    # "FREE PDF PATTERN" badge, overlapping the bottom edge of the hero
+    bf = POP('Bold', 30); t = 'FREE PDF PATTERN'; tw = d.textlength(t, font=bf); bh = 70
+    bx0 = W // 2 - tw / 2 - 40; by0 = hy1 - bh // 2
+    d.rounded_rectangle((bx0, by0, W // 2 + tw / 2 + 40, by0 + bh), radius=bh // 2, fill=K)
+    d.text((W // 2 - tw / 2, by0 + (bh - bf.size * 1.42) / 2), t, font=bf, fill='white')
 
-# ---- title block ----
-meta = f"{A.code}" + (f"  ·  {A.level.upper()}" if A.level else '')
-ctext(d, 880, meta, POP('SemiBold', 26), spacing=4)
-lines = split_title(d, A.name, ROZHA, 940)
-tf = autosize(d, lines, ROZHA, 940, 104 if len(lines) == 2 else 110)
-y = 915
-for ln in lines:
-    ctext(d, y, ln, tf); y += int(tf.size * 1.02)
-ctext(d, y + 34, f"Sizes {A.sizes}  ·  A4 · US Letter · A0", POP('Medium', 30))
+    # ---- title block ----
+    meta = f"{A.code}" + (f"  ·  {A.level.upper()}" if A.level else '')
+    ctext(d, 880, meta, POP('SemiBold', 26), spacing=4)
+    lines = split_title(d, A.name, ROZHA, 940)
+    tf = autosize(d, lines, ROZHA, 940, 104 if len(lines) == 2 else 110)
+    y = 915
+    for ln in lines:
+        ctext(d, y, ln, tf); y += int(tf.size * 1.02)
+    ctext(d, y + 34, f"Sizes {A.sizes}  ·  A4 · US Letter · A0", POP('Medium', 30))
 
-# ---- footer: logo + link in bio ----
-fy = 1215
-lw = 250; lh = int(LOGO.height * lw / LOGO.width)
-im.alpha_composite(LOGO.resize((lw, lh), Image.LANCZOS), (96, fy + (80 - lh) // 2))
-lf = POP('SemiBold', 26); t = 'Link in bio  ·  sewcraftly.com'; tw = d.textlength(t, font=lf)
-d.rounded_rectangle((W - 96 - tw - 60, fy + 8, W - 96, fy + 72), radius=32, fill=BAND)
-d.text((W - 96 - tw - 30, fy + 8 + (64 - lf.size * 1.42) / 2), t, font=lf, fill=K)
+    # ---- footer: logo + link in bio ----
+    fy = 1215
+    lw = 250; lh = int(LOGO.height * lw / LOGO.width)
+    im.alpha_composite(LOGO.resize((lw, lh), Image.LANCZOS), (96, fy + (80 - lh) // 2))
+    lf = POP('SemiBold', 26); t = 'Link in bio  ·  sewcraftly.com'; tw = d.textlength(t, font=lf)
+    d.rounded_rectangle((W - 96 - tw - 60, fy + 8, W - 96, fy + 72), radius=32, fill=BAND)
+    d.text((W - 96 - tw - 30, fy + 8 + (64 - lf.size * 1.42) / 2), t, font=lf, fill=K)
+
+    return im
+
+
+def logo_at(im, xy, lw):
+    lh = int(LOGO.height * lw / LOGO.width); im.alpha_composite(LOGO.resize((lw, lh), Image.LANCZOS), xy); return lh
+
+def style_photo():
+    # full-bleed model photo, sketch card bottom-right, title panel on band colour
+    im = Image.new('RGBA', (W, H)); ph = cover_crop(Image.open(A.photo).convert('RGB'), W, H, 0.25).convert('RGBA'); im.alpha_composite(ph)
+    d = ImageDraw.Draw(im)
+    px0, py0 = 56, 900
+    panel = noise_bg(BAND, (W - 2 * px0, H - py0 - 56), 0.06).convert('RGBA')
+    shadowed(im, panel, (px0, py0), off=(0, 8), blur=18, alpha=70)
+    d = ImageDraw.Draw(im)
+    bf = POP('Bold', 26); t = 'FREE PDF PATTERN'; tw = d.textlength(t, font=bf)
+    d.rounded_rectangle((96, py0 + 36, 96 + tw + 56, py0 + 96), radius=30, fill=K); d.text((124, py0 + 36 + (60 - bf.size * 1.42) / 2), t, font=bf, fill='white')
+    lines = split_title(d, A.name, ROZHA, 560)
+    tf = autosize(d, lines, ROZHA, 560, 84)
+    y = py0 + 118
+    for ln in lines: d.text((96, y), ln, font=tf, fill=K); y += int(tf.size * 1.0)
+    d.text((96, H - 56 - 62), f"Sizes {A.sizes}  ·  {A.code}", font=POP('Medium', 26), fill=K)
+    # sketch card
+    cw, ch = 330, 470
+    card = Image.new('RGBA', (cw, ch), (255, 255, 255, 255)); s = fit(sticker, cw - 40, ch - 40)
+    card.alpha_composite(s, ((cw - s.width) // 2, (ch - s.height) // 2))
+    shadowed(im, card, (W - 56 - 40 - cw, py0 - 200), off=(6, 10), blur=16, alpha=90)
+    # logo chip top-left
+    chip = Image.new('RGBA', (290, 96), (255, 255, 255, 235)); m = Image.new('L', chip.size, 0); ImageDraw.Draw(m).rounded_rectangle((0, 0, 289, 95), radius=48, fill=255); chip.putalpha(m)
+    lw = 230; lh = int(LOGO.height * lw / LOGO.width); chip.alpha_composite(LOGO.resize((lw, lh), Image.LANCZOS), (30, (96 - lh) // 2))
+    im.alpha_composite(chip, (72, 64))
+    return im
+
+def style_sketch():
+    # clean flat-lay: big sketch on a band-colour arch, feature row, title on top
+    im = noise_bg(CREAM).convert('RGBA'); d = ImageDraw.Draw(im)
+    lh = logo_at(im, (W // 2 - 150, 52), 300)
+    ctext(d, 52 + lh + 18, 'FREE SEWING PATTERN', POP('SemiBold', 26), spacing=6)
+    lines = split_title(d, A.name, ROZHA, 900) if len(A.name) > 18 else [A.name]
+    tf = autosize(d, lines, ROZHA, 900, 96 if len(lines) == 2 else 104)
+    y = 52 + lh + 62
+    for ln in lines: ctext(d, y, ln, tf); y += int(tf.size * 1.0)
+    ax0, ax1, ay0, ay1 = 150, W - 150, y + 30, 1150
+    arch = Image.new('L', (W, H), 0); ad = ImageDraw.Draw(arch)
+    r = (ax1 - ax0) // 2; ad.pieslice((ax0, ay0, ax1, ay0 + 2 * r), 180, 360, fill=255); ad.rectangle((ax0, ay0 + r, ax1, ay1), fill=255)
+    im = Image.composite(noise_bg(BAND, (W, H), 0.06).convert('RGBA'), im, arch); d = ImageDraw.Draw(im)
+    s = fit(sticker, ax1 - ax0 + 120, ay1 - ay0 - 40); shadowed(im, s, (W // 2 - s.width // 2, ay1 - s.height - 10))
+    # badge
+    bf = POP('Bold', 28); t = 'FREE PDF'; tw = d.textlength(t, font=bf)
+    d.rounded_rectangle((ax1 - tw - 20, ay0 + 40, ax1 + 60, ay0 + 106), radius=33, fill=K); d.text((ax1 - tw + 20, ay0 + 40 + (66 - bf.size * 1.42) / 2), t, font=bf, fill='white')
+    # feature row
+    items = [('SIZES', A.sizes), ('FORMATS', 'A4 · Letter · A0')] + ([('LEVEL', A.level)] if A.level else [])
+    cw = (W - 112) // len(items); fy = 1185
+    for i, (k, v) in enumerate(items):
+        cx = 56 + cw * i + cw // 2
+        ctext(d, fy, k, POP('SemiBold', 20), cx=cx, spacing=4, fill=(90, 90, 90))
+        ctext(d, fy + 32, v, POP('SemiBold', 30), cx=cx)
+        if i: d.line((56 + cw * i, fy + 6, 56 + cw * i, fy + 70), fill=(200, 195, 188), width=2)
+    ctext(d, H - 62, f"{A.code}  ·  link in bio  ·  sewcraftly.com", POP('Medium', 24), spacing=2, fill=(70, 70, 70))
+    return im
+
+im = {'split': style_split, 'photo': style_photo, 'sketch': style_sketch}[A.style]()
 
 os.makedirs(os.path.dirname(os.path.abspath(A.out)), exist_ok=True)
 im.convert('RGB').save(A.out, quality=92)
