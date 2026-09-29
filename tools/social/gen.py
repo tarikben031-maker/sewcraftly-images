@@ -98,12 +98,18 @@ def style_split():
         ph = cover_crop(Image.open(A.photo).convert('RGB'), pw, hy1 - hy0, 0.35)
         im.paste(ph, (hx0, hy0))
         if PAIR:
-            aw, ah, gap = hx1 - hx0 - pw - 50, hy1 - hy0 - 100, 14
+            # left sketch = FRONT, right sketch = BACK, each labelled underneath
+            lab_h = 58
+            aw, ah, gap = hx1 - hx0 - pw - 50, hy1 - hy0 - 100 - lab_h, 14
             sc = min((aw - gap) / (PAIR[0].width + PAIR[1].width), ah / max(p.height for p in PAIR))
             ps = [p.resize((int(p.width * sc), int(p.height * sc)), Image.LANCZOS) for p in PAIR]
             tw = ps[0].width + gap + ps[1].width; x = hx0 + pw + (hx1 - hx0 - pw - tw) // 2
-            base = hy0 + (hy1 - hy0 + max(p.height for p in ps)) // 2 - 12
-            for p in ps: shadowed(im, p, (x, base - p.height)); x += p.width + gap
+            base = hy0 + (hy1 - hy0 + max(p.height for p in ps) - lab_h) // 2 - 12
+            lf = POP('SemiBold', 24)
+            for p, lab in zip(ps, ('FRONT', 'BACK')):
+                shadowed(im, p, (x, base - p.height))
+                ctext(ImageDraw.Draw(im), base + 22, lab, lf, cx=x + p.width // 2, spacing=5)
+                x += p.width + gap
         else:
             s = fit(sticker, hx1 - hx0 - pw - 50, hy1 - hy0 - 90)
             shadowed(im, s, (hx0 + pw + (hx1 - hx0 - pw - s.width) // 2, hy0 + (hy1 - hy0 - s.height) // 2))
