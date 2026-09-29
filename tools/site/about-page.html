@@ -1,0 +1,106 @@
+<div class="sca">
+<style>
+.sca{--acc:#b35a45;--acc-d:#8f4434;--ink:#1f1f1f;--mut:#6b625c;--soft:#f7f0ea;--line:#e8dbd1;color:var(--ink)}
+.sca *{box-sizing:border-box}
+.sca h1,.sca h2,.sca h3,.sca p{margin:0}
+.sca .sca-sec{margin:0 0 56px}
+.sca .sca-kick{display:inline-block;color:var(--acc)!important;font-size:13px!important;font-weight:700!important;letter-spacing:.12em;text-transform:uppercase;margin:0 0 10px!important}
+.sca h2.sca-h{font-size:30px!important;line-height:1.2;font-weight:800!important;color:var(--ink)!important;margin:0 0 14px!important}
+.sca .sca-lead{font-size:17px!important;line-height:1.7;color:#3d3733!important}
+/* hero */
+.sca .sca-hero{position:relative;background:var(--soft);border-radius:24px;padding:48px 36px;text-align:center;overflow:hidden}
+.sca .sca-hero:before{content:"";position:absolute;inset:14px;border:2px dashed #d9bfb0;border-radius:16px;pointer-events:none}
+.sca .sca-hero img.sca-logo{width:min(360px,80%);height:auto;margin:0 auto 18px;display:block}
+.sca .sca-hero h1{font-size:40px!important;line-height:1.15;font-weight:800!important;color:var(--ink)!important;margin:0 0 14px!important}
+.sca .sca-hero h1 span{color:var(--acc)!important}
+.sca .sca-hero p{max-width:560px;margin:0 auto!important;font-size:18px!important;line-height:1.65;color:#3d3733!important}
+/* story timeline */
+.sca .sca-timeline{position:relative;margin:26px 0 0;padding:0 0 0 46px}
+.sca .sca-timeline:before{content:"";position:absolute;left:10px;top:6px;bottom:6px;border-left:3px dashed var(--acc)}
+.sca .sca-step{position:relative;margin:0 0 26px}
+.sca .sca-step:last-child{margin:0}
+.sca .sca-step:before{content:"";position:absolute;left:-45px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;border:4px solid var(--acc)}
+.sca .sca-step h3{font-size:19px!important;font-weight:800!important;color:var(--ink)!important;margin:0 0 6px!important}
+.sca .sca-step p{font-size:16px!important;line-height:1.7;color:#3d3733!important}
+/* cards */
+.sca .sca-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px 0 0}
+.sca .sca-grid.sca-4{grid-template-columns:repeat(2,1fr)}
+.sca .sca-card{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:22px 20px;text-align:left}
+.sca .sca-ico{width:48px;height:48px;border-radius:14px;background:var(--soft);color:var(--acc);display:flex;align-items:center;justify-content:center;margin:0 0 14px}
+.sca .sca-ico svg{width:26px;height:26px}
+.sca .sca-card h3{font-size:18px!important;font-weight:800!important;color:var(--ink)!important;margin:0 0 6px!important}
+.sca .sca-card .sca-role{display:block;color:var(--acc)!important;font-size:12px!important;font-weight:700!important;letter-spacing:.1em;text-transform:uppercase;margin:0 0 8px}
+.sca .sca-card p{font-size:15px!important;line-height:1.65;color:#4a433e!important}
+/* quote */
+.sca .sca-quote{background:var(--acc);color:#fff!important;border-radius:22px;padding:34px 30px;text-align:center}
+.sca .sca-quote p{color:#fff!important;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:24px!important;line-height:1.45}
+.sca .sca-quote span{display:block;margin:12px 0 0;color:#fbe7df!important;font-size:14px!important;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+/* cta */
+.sca .sca-cta{background:var(--soft);border-radius:22px;padding:34px 28px;text-align:center}
+.sca .sca-cta p{max-width:520px;margin:0 auto 20px!important;font-size:16px!important;line-height:1.7;color:#3d3733!important}
+.sca .sca-btns{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.sca .sca-btn{display:inline-flex;align-items:center;gap:9px;padding:13px 22px;border-radius:999px;font-weight:800;font-size:15px!important;text-decoration:none!important}
+.sca .sca-btn svg{width:20px;height:20px;flex:0 0 auto}
+.sca .sca-btn-kofi{background:#fff;border:2px solid var(--acc);color:var(--acc)!important}
+.sca .sca-btn-kofi:hover{background:var(--acc);color:#fff!important}
+.sca .sca-btn-pin{background:#e60023;color:#fff!important;border:2px solid #e60023}
+.sca .sca-btn-pin:hover{background:#ad081b}
+.sca .sca-cta p.sca-mail{margin:18px auto 0!important;font-size:15px!important;color:var(--mut)!important}
+.sca .sca-mail a{color:var(--acc)!important;font-weight:700}
+.sca .sca-cta p.sca-sign{margin:14px auto 0!important;font-family:Georgia,'Times New Roman',serif;font-style:italic;color:var(--acc)!important;font-size:20px!important}
+@media (max-width:760px){.sca .sca-grid,.sca .sca-grid.sca-4{grid-template-columns:1fr}.sca .sca-hero{padding:40px 22px}.sca .sca-hero h1{font-size:32px!important}.sca h2.sca-h{font-size:25px!important}.sca .sca-quote p{font-size:20px!important}}
+</style>
+
+<section class="sca-hero sca-sec">
+<img class="sca-logo" src="https://sewcraftly.com/wp-content/uploads/2026/09/SewCraftly-logo.png" alt="SewCraftly" />
+<h1>Sewing patterns that <span>make sense</span></h1>
+<p>We are the SewCraftly team: a small group of sewing lovers sharing free PDF patterns with clear size charts and step-by-step instructions, so you can go from printed pattern to finished garment without getting stuck.</p>
+</section>
+
+<section class="sca-sec">
+<span class="sca-kick">Our story</span>
+<h2 class="sca-h">Why SewCraftly exists</h2>
+<div class="sca-timeline">
+<div class="sca-step"><h3>A pattern you love&hellip;</h3><p>Every sewist knows the feeling: you find the perfect dress or pair of shorts, print the pattern, lay out the fabric&hellip; and then the instructions leave you guessing. Which seam first? Which way does the dart go?</p></div>
+<div class="sca-step"><h3>&hellip;and instructions that don&rsquo;t help</h3><p>Too many patterns come with a few short lines of text, missing sizes, or no fabric amounts at all. That is where good projects end up unfinished in a drawer.</p></div>
+<div class="sca-step"><h3>So we started SewCraftly</h3><p>We wanted a place where every pattern comes with the full picture: a size chart you can trust, fabric amounts per size, notes on fabric and fit, and steps written in plain words.</p></div>
+<div class="sca-step"><h3>One pattern at a time</h3><p>Today we keep adding new free patterns for women, men and kids. Each one is prepared with the same care, and each one is free to download.</p></div>
+</div>
+</section>
+
+<section class="sca-quote sca-sec"><p>&ldquo;A pattern is only as good as the instructions that come with it.&rdquo;</p><span>The idea behind SewCraftly</span></section>
+
+<section class="sca-sec">
+<span class="sca-kick">Behind every pattern</span>
+<h2 class="sca-h">The team and what each of us does</h2>
+<p class="sca-lead">Every SewCraftly pattern passes through three pairs of hands before it reaches you.</p>
+<div class="sca-grid">
+<div class="sca-card"><div class="sca-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21 21 3"/><path d="M6 18 4 16"/><path d="M9 15 7 13"/><path d="M12 12l-2-2"/><path d="M15 9l-2-2"/><path d="M18 6l-2-2"/></svg></div><span class="sca-role">Pattern maker</span><h3>Sizes that fit</h3><p>Prepares each pattern in every size, checks the size charts and finished measurements, and packs the A4, US Letter and A0 files.</p></div>
+<div class="sca-card"><div class="sca-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></div><span class="sca-role">Guide writer</span><h3>Steps in plain words</h3><p>Writes the sewing steps, the fabric notes and the illustrated guides, so every seam, dart and hem is explained.</p></div>
+<div class="sca-card"><div class="sca-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2a10 10 0 0 0 0 20c1 0 1.7-.8 1.7-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.8-1.7 1.7-1.7H17a5 5 0 0 0 5-5C22 6 17.5 2 12 2z"/></svg></div><span class="sca-role">Designer</span><h3>Easy to find, easy to read</h3><p>Designs the covers, the Pinterest pins and the pages of this site, so you can spot the right pattern at a glance.</p></div>
+</div>
+</section>
+
+<section class="sca-sec">
+<span class="sca-kick">What you will find here</span>
+<h2 class="sca-h">Everything you need to finish your make</h2>
+<div class="sca-grid sca-4">
+<div class="sca-card"><div class="sca-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg></div><h3>Free PDF patterns</h3><p>Dresses, tops, pants, skirts and shorts, ready to print in A4, US Letter or A0.</p></div>
+<div class="sca-card"><div class="sca-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M6 7v4M10 7v3M14 7v4M18 7v3"/></svg></div><h3>Clear size charts</h3><p>Body and finished measurements for every size, so you can choose with confidence.</p></div>
+<div class="sca-card"><div class="sca-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><h3>Step-by-step instructions</h3><p>Every pattern comes with its sewing steps, from the first dart to the final press.</p></div>
+<div class="sca-card"><div class="sca-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><h3>Beginner tutorials</h3><p>How to take your measurements, choose your size and print and assemble a PDF pattern.</p></div>
+</div>
+</section>
+
+<section class="sca-cta sca-sec">
+<span class="sca-kick">Say hello</span>
+<h2 class="sca-h">Sew with us</h2>
+<p>We love seeing your makes! Share them with <strong>#sewcraftly</strong>, follow us on Pinterest for new patterns, and if our free patterns help you, a coffee helps us keep them free.</p>
+<div class="sca-btns">
+<a class="sca-btn sca-btn-pin" href="https://www.pinterest.com/sewcraftly3/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0a12 12 0 0 0-4.37 23.17c-.1-.94-.2-2.4.04-3.44l1.4-5.96s-.35-.72-.35-1.78c0-1.66.97-2.9 2.17-2.9 1.02 0 1.52.77 1.52 1.7 0 1.03-.66 2.58-1 4.01-.28 1.2.6 2.18 1.78 2.18 2.14 0 3.78-2.26 3.78-5.5 0-2.88-2.07-4.9-5.03-4.9-3.42 0-5.43 2.57-5.43 5.22 0 1.03.4 2.14.9 2.74.1.12.11.22.08.34l-.33 1.36c-.05.22-.18.27-.4.16-1.5-.7-2.43-2.89-2.43-4.65 0-3.78 2.75-7.26 7.93-7.26 4.16 0 7.4 2.97 7.4 6.93 0 4.13-2.6 7.46-6.22 7.46-1.21 0-2.36-.63-2.75-1.38l-.75 2.85c-.27 1.04-1 2.35-1.49 3.15A12 12 0 1 0 12 0z"/></svg> Follow us on Pinterest</a>
+<a class="sca-btn sca-btn-kofi" href="https://ko-fi.com/sewcraftly" target="_blank" rel="noopener"><svg viewBox="0 0 32 26" aria-hidden="true" style="width:24px;height:20px"><path d="M3 4h20v11a7 7 0 0 1-7 7h-6a7 7 0 0 1-7-7z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M23 7h2.5a4.5 4.5 0 0 1 0 9H23" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M13 17.5s-5-2.9-5-6.1A2.6 2.6 0 0 1 13 10a2.6 2.6 0 0 1 5 1.4c0 3.2-5 6.1-5 6.1z" fill="#ff5e5b"/></svg> Buy us a coffee</a>
+</div>
+<p class="sca-mail">Questions? Write to us at <a href="mailto:sewcraftly3@gmail.com">sewcraftly3@gmail.com</a></p>
+<p class="sca-sign">Happy sewing, the SewCraftly Team</p>
+</section>
+</div>
