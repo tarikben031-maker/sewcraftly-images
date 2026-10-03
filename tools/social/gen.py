@@ -24,6 +24,7 @@ ap.add_argument('--line2', default='Free Sewing Pattern')
 ap.add_argument('--badge', default='PDF + STEP-BY-STEP')
 ap.add_argument('--axes', default='', help='"FRONT_X,BACK_X": centre lines of the front (left) and back (right) sketch inside the cover sticker; each is rebuilt by mirroring its visible half so they no longer overlap')
 ap.add_argument('--front', default=None); ap.add_argument('--back', default=None)
+ap.add_argument('--sketch', default=None, help='clean front-only sketch on white; used instead of the sticker cut from the cover (photo + front sketch layout)')
 ap.add_argument('--out', required=True); ap.add_argument('--fonts', default='gf/ofl')
 ap.add_argument('--logo', default=os.path.join(HERE, '..', '..', 'brand', 'sewcraftly-logo.png'))
 A = ap.parse_args()
@@ -44,6 +45,17 @@ for pt in ((2, 2), (reg.width - 3, 2), (2, reg.height - 3), (reg.width - 3, reg.
     if fl.getpixel(pt) == 0: ImageDraw.floodfill(fl, pt, 128)
 inside = fl.point(lambda v: 0 if v == 128 else 255).filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(0.8))
 sticker = reg.copy(); sticker.putalpha(inside); sticker = sticker.crop(inside.point(lambda v: 255 if v > 128 else 0).getbbox())
+if A.sketch:
+    # clean sketch on white: silhouette mask + white outline sticker (same method as tools/pins/gen.py)
+    src = Image.open(A.sketch).convert('RGB'); pad = 30
+    big = Image.new('RGB', (src.width + 2 * pad, src.height + 2 * pad), 'white'); big.paste(src, (pad, pad)); src = big
+    gi = ImageChops.invert(src.convert('L')); ln = gi.point(lambda v: 255 if v > 60 else 0).filter(ImageFilter.MaxFilter(15))
+    fl2 = ln.copy(); ImageDraw.floodfill(fl2, (0, 0), 128)
+    sil = fl2.point(lambda v: 0 if v == 128 else 255).filter(ImageFilter.MinFilter(5))
+    outl = sil.filter(ImageFilter.MaxFilter(17))
+    st = Image.new('RGBA', src.size, (0, 0, 0, 0)); st.paste((255, 255, 255, 255), (0, 0), outl)
+    st.paste(src, (0, 0), ImageChops.lighter(sil, gi))
+    sticker = st.crop(outl.getbbox())
 strip = cov.crop((1165, 5, 1195, 795)); px = list(strip.get_flattened_data() if hasattr(strip, 'get_flattened_data') else strip.getdata())
 BAND = tuple(int(statistics.median(c[i] for c in px)) for i in range(3))
 
