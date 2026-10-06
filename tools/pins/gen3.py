@@ -81,7 +81,7 @@ ctext(262, SIZES, F('Poppins-Italic.ttf', 40))
 ctext(318, '+ Instructions', F('Poppins-SemiBold.ttf', 24))
 
 # --- bottom brand bar
-bar = Image.new('RGBA', (W, 110), SAGE + (235,))
+bar = Image.new('RGBA', (W, 110), K + (255,))
 bg.alpha_composite(bar, (0, H - 110))
 d = ImageDraw.Draw(bg)
 sf = F('Poppins-Medium.ttf', 40)
@@ -89,7 +89,7 @@ t = 'sewcraftly.com'; sp = 6
 tw = sum(d.textlength(ch, font=sf) + sp for ch in t) - sp
 x = W / 2 - tw / 2
 for ch in t:
-    d.text((x, H - 82), ch, font=sf, fill=K); x += d.textlength(ch, font=sf) + sp
+    d.text((x, H - 82), ch, font=sf, fill='white'); x += d.textlength(ch, font=sf) + sp
 
 bg.convert('RGB').save(out, quality=92)
 print('saved', out)
