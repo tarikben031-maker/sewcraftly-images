@@ -31,7 +31,7 @@ ap.add_argument('--sizes', default='XXS – 4XL')
 ap.add_argument('--formats', default='A4 & US Letter')
 ap.add_argument('--level', type=int, default=1, choices=[1, 2, 3])
 ap.add_argument('--photo-x', type=float, default=0.5)
-ap.add_argument('--logo', default=os.path.join(REPO, 'brand', 'sewcraftly-logo.png'))
+ap.add_argument('--logo', default=os.path.join(REPO, 'brand', 'sewcraftly-icon.png'))
 ap.add_argument('--fonts', default=None, help='dir containing Poppins-*.ttf')
 a = ap.parse_args()
 
