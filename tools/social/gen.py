@@ -145,7 +145,7 @@ def style_split():
     y = 905
     for ln in lines:
         ctext(d, y, ln, tf); y += int(tf.size * 1.02)
-    ctext(d, y + 22, f"Sizes {A.sizes}  ·  A4 · US Letter · A0", POP('Medium', 30))
+    ctext(d, y + 22, f"Sizes {A.sizes}  ·  A4 · US Letter", POP('Medium', 30))
 
     # ---- footer: logo + link in bio ----
     fy = 1218
@@ -212,7 +212,7 @@ def style_sketch():
     bf = POP('Bold', 28); t = 'FREE PDF'; tw = d.textlength(t, font=bf)
     d.rounded_rectangle((ax1 - tw - 20, ay0 + 40, ax1 + 60, ay0 + 106), radius=33, fill=K); d.text((ax1 - tw + 20, ay0 + 40 + (66 - bf.size * 1.42) / 2), t, font=bf, fill='white')
     # feature row
-    items = [('SIZES', A.sizes), ('FORMATS', 'A4 · Letter · A0')] + ([('LEVEL', A.level)] if A.level else [])
+    items = [('SIZES', A.sizes), ('FORMATS', 'A4 · US Letter')] + ([('LEVEL', A.level)] if A.level else [])
     cw = (W - 112) // len(items); fy = 1185
     for i, (k, v) in enumerate(items):
         cx = 56 + cw * i + cw // 2
