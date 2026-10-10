@@ -219,7 +219,7 @@ def style_sketch():
         ctext(d, fy, k, POP('SemiBold', 20), cx=cx, spacing=4, fill=(90, 90, 90))
         ctext(d, fy + 32, v, POP('SemiBold', 30), cx=cx)
         if i: d.line((56 + cw * i, fy + 6, 56 + cw * i, fy + 70), fill=(200, 195, 188), width=2)
-    ctext(d, H - 62, f"{A.code}  ·  link in bio  ·  sewcraftly.com", POP('Medium', 24), spacing=2, fill=(70, 70, 70))
+    ctext(d, H - 62, f"{A.code}  ·  link in bio  ·  sewcraftlypatterns.com", POP('Medium', 24), spacing=2, fill=(70, 70, 70))
     return im
 
 im = {'split': style_split, 'photo': style_photo, 'sketch': style_sketch}[A.style]()

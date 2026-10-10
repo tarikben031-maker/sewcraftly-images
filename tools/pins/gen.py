@@ -122,7 +122,7 @@ def pin1(out):
         dd=ImageDraw.Draw(det); f=POP('SemiBold',18)
         dd.rounded_rectangle((20,18,20+dd.textlength('DETAILS',font=f)+28,54),radius=18,fill=K); dd.text((34,22),'DETAILS',font=f,fill='white')
         im.alpha_composite(det,(510,y0))
-        ctext(d,1395,f"Sizes {A.sizes}  ·  PDF  ·  sewcraftly.com",POP('Medium',30))
+        ctext(d,1395,f"Sizes {A.sizes}  ·  PDF  ·  sewcraftlypatterns.com",POP('Medium',30))
         im.convert('RGB').save(out,quality=92); return
     det=noise_bg(BAND,(430,y1-y0),0.06).convert('RGBA')
     top=int(sticker.height*0.42); al=sticker.split()[3].crop((0,0,sticker.width,top))
@@ -133,7 +133,7 @@ def pin1(out):
     dd=ImageDraw.Draw(det); f=POP('SemiBold',18)
     dd.rounded_rectangle((20,18,20+dd.textlength('DETAILS',font=f)+28,54),radius=18,fill=K); dd.text((34,22),'DETAILS',font=f,fill='white')
     im.alpha_composite(det,(510,y0))
-    ctext(d,1395,f"Sizes {A.sizes}  ·  PDF  ·  sewcraftly.com",POP('Medium',30))
+    ctext(d,1395,f"Sizes {A.sizes}  ·  PDF  ·  sewcraftlypatterns.com",POP('Medium',30))
     im.convert('RGB').save(out,quality=92)
 
 def pin2(out):
