@@ -153,7 +153,7 @@ def style_split():
     im.alpha_composite(LOGO.resize((lw, lh), Image.LANCZOS), (96, fy + 6 + (84 - lh) // 2))
     # CTA: band-colour pill, "Link in bio" light + "sewcraftly.com" bold, centred on the logo row
     f1, f2 = POP('Medium', 24), POP('Bold', 26)
-    t1, sep, t2 = 'Link in bio', '  ·  ', 'sewcraftly.com'
+    t1, sep, t2 = 'Link in bio', '  ·  ', 'sewcraftlypatterns.com'
     w1, ws, w2 = d.textlength(t1, font=f1), d.textlength(sep, font=f1), d.textlength(t2, font=f2)
     ph_ = 62; px1 = W - 96; px0 = px1 - (w1 + ws + w2 + 64); py0 = fy + 6 + (84 - ph_) // 2
     d.rounded_rectangle((px0, py0, px1, py0 + ph_), radius=ph_ // 2, fill=BAND)

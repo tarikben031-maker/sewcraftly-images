@@ -156,7 +156,7 @@ def pin2(out):
     d.rounded_rectangle((W//2-tw/2-36,by+170,W//2+tw/2+36,by+238),radius=34,fill=(255,255,255)); ctext(d,by+180,t,sub)
     ctext(d,by+255,f"Sizes {A.sizes}"+(f"  ·  {A.level}" if A.level else ''),POP('SemiBoldItalic',38))
     d.line((W//2-45,by+328,W//2+45,by+328),fill=K,width=4)
-    ctext(d,by+344,'sewcraftly.com',POP('Medium',30),spacing=4)
+    ctext(d,by+344,'sewcraftlypatterns.com',POP('Medium',30),spacing=4)
     im.convert('RGB').save(out,quality=92)
 
 os.makedirs(os.path.dirname(os.path.abspath(A.out)),exist_ok=True)

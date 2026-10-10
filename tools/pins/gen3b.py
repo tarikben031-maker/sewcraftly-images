@@ -89,7 +89,7 @@ bar = Image.new('RGBA', (W, 110), K + (255,))
 bg.alpha_composite(bar, (0, H - 110))
 d = ImageDraw.Draw(bg)
 sf = F('Poppins-Medium.ttf', 40)
-t = 'sewcraftly.com'; sp = 6
+t = 'sewcraftlypatterns.com'; sp = 6
 tw = sum(d.textlength(ch, font=sf) + sp for ch in t) - sp
 x = W / 2 - tw / 2
 for ch in t:
