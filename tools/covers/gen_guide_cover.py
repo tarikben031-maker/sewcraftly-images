@@ -11,7 +11,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, '..', '..'))
 ap = argparse.ArgumentParser()
 ap.add_argument('out'); ap.add_argument('--title', required=True)
-ap.add_argument('--motif', default='fabric', choices=['measure', 'size', 'fabric', 'print'])
+ap.add_argument('--motif', default='fabric', choices=['measure', 'size', 'fabric', 'print', 'stretch', 'length'])
 ap.add_argument('--tag', default='FREE SEWING GUIDE')
 a = ap.parse_args()
 
@@ -66,6 +66,28 @@ elif m == 'size':  # size chart bars
         y = cy0 + 50 + k * 65
         d.rounded_rectangle((cx0 + 40, y, cx0 + 40 + wd, y + 42), 21, fill=TERRA if lab == 'M' else ROSE)
         d.text((cx0 + 58, y + 21), lab, font=F('Poppins-Bold.ttf', 22), fill='white', anchor='lm')
+elif m == 'stretch':  # straight stitch vs zigzag + stretch arrow
+    for k, kind in enumerate(['straight', 'zigzag', 'stretch']):
+        y = cy0 + 50 + k * 100
+        d.rounded_rectangle((cx0 + 35, y, cx1 - 35, y + 70), 14, fill=(244, 241, 238))
+        if kind == 'straight':
+            for x in range(cx0 + 55, cx1 - 70, 26):
+                d.line((x, y + 35, x + 16, y + 35), fill=NAVY, width=5)
+        else:
+            pts = []
+            for i, x in enumerate(range(cx0 + 55, cx1 - 60, 16)):
+                pts.append((x, y + (20 if i % 2 == 0 else 50)))
+            d.line(pts, fill=ROSE, width=5, joint='curve')
+elif m == 'length':  # piece cut and spread
+    d.rectangle((cx0 + 90, cy0 + 40, cx1 - 90, cy0 + 150), fill=(244, 241, 238), outline=NAVY, width=4)
+    d.rectangle((cx0 + 90, cy0 + 200, cx1 - 90, cy0 + 310), fill=(244, 241, 238), outline=NAVY, width=4)
+    for x in range(cx0 + 70, cx1 - 60, 24):
+        d.line((x, cy0 + 160, x + 14, cy0 + 160), fill=ROSE, width=4)
+        d.line((x, cy0 + 190, x + 14, cy0 + 190), fill=ROSE, width=4)
+    d.line((cx1 - 70, cy0 + 160, cx1 - 70, cy0 + 190), fill=TERRA, width=5)
+    d.polygon([(cx1 - 70, cy0 + 156), (cx1 - 78, cy0 + 168), (cx1 - 62, cy0 + 168)], fill=TERRA)
+    d.polygon([(cx1 - 70, cy0 + 194), (cx1 - 78, cy0 + 182), (cx1 - 62, cy0 + 182)], fill=TERRA)
+    d.text(((cx0 + cx1) // 2, cy0 + 350), '+ 5 cm', font=F('Poppins-Bold.ttf', 30), fill=TERRA, anchor='mm')
 else:  # print: stacked pages with test square
     for k in range(3):
         o = k * 26
