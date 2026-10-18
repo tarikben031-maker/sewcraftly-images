@@ -51,7 +51,7 @@ card=(60,985,490,1370); shadow(cv,card,0,(5,8),12,60); d=ImageDraw.Draw(cv); d.r
 lg=logo(340); cv.paste(lg,(card[0]+(430-340)//2,card[1]+(385-lg.height)//2),lg)
 det=cover_crop(Image.open(A.detail).convert('RGB'),430,385,.5,.5); shadow(cv,(510,985,940,1370),0,(5,8),12,60); d=ImageDraw.Draw(cv); cv.paste(det,(510,985))
 pf=POP('Bold',21); d.rounded_rectangle((530,1003,630,1040),18,fill=K); d.text((580,1022),'DETAILS',font=pf,fill='white',anchor='mm')
-ctext(d,1397,f"Sizes {A.sizes}  ·  PDF  ·  sewcraftlypatterns.com",POP('Medium',31))
+ctext(d,1397,f"Sizes {A.sizes}  ·  PDF  ·  Free download",POP('Medium',31))
 cv.save(A.out+'-pin1.jpg',quality=93)
 # ---------- pin 2
 cv=Image.new('RGB',(W,H),'white'); d=ImageDraw.Draw(cv)
@@ -69,6 +69,6 @@ ft=fit_font(d,f"FREE {G} SEWING PATTERN",anton,870,112); ctext(d,1128,f"FREE {G}
 pf2=POP('SemiBold',34); t='+ Step-by-Step Instructions'; tw=d.textlength(t,font=pf2)
 d.rounded_rectangle((W/2-tw/2-38,1252,W/2+tw/2+38,1322),35,fill='white'); d.text((W/2,1287),t,font=pf2,fill=K,anchor='mm')
 ctext(d,1340,f"Sizes {A.sizes}  ·  {A.level}",POP('SemiBoldItalic',38))
-d.line((W/2-50,1409,W/2+50,1409),fill=K,width=4); ctext(d,1428,'sewcraftlypatterns.com',POP('Medium',32),sp=5)
+d.line((W/2-50,1409,W/2+50,1409),fill=K,width=4); ctext(d,1428,'SEWCRAFTLY',POP('Medium',32),sp=8)
 cv.save(A.out+'-pin2.jpg',quality=93)
 print('ok')
