@@ -30,5 +30,5 @@ def page(p,w,angle,pos):
 page(a.p3,560,-5,(470,420)); page(a.p2,560,-3,(250,370)); page(a.p1,560,2,(90,350))
 d=ImageDraw.Draw(bg)
 d.text((930,870),a.name,font=F('Poppins-BoldItalic.ttf',62),fill=(20,20,20),stroke_width=7,stroke_fill='white',anchor='rm')
-d.text((930,935),f'#{a.code} · sewcraftlypatterns.com',font=F('Poppins-Bold.ttf',36),fill=(20,20,20),stroke_width=5,stroke_fill='white',anchor='rm')
+d.text((930,935),f'#{a.code} · SewCraftly',font=F('Poppins-Bold.ttf',36),fill=(20,20,20),stroke_width=5,stroke_fill='white',anchor='rm')
 bg.save(a.out,quality=92)
