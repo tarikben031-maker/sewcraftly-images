@@ -58,6 +58,7 @@ if A.sketch:
     sticker = st.crop(outl.getbbox())
 strip = cov.crop((1165, 5, 1195, 795)); px = list(strip.get_flattened_data() if hasattr(strip, 'get_flattened_data') else strip.getdata())
 BAND = tuple(int(statistics.median(c[i] for c in px)) for i in range(3))
+if os.environ.get('BAND'): BAND = tuple(int(v) for v in os.environ['BAND'].split(','))  # new-style covers have no colour band: pass it explicitly
 
 def _mirror(im, ax, keep_left):
     half = im.crop((0, 0, ax, im.height)) if keep_left else im.crop((ax, 0, im.width, im.height))
