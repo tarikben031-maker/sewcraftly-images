@@ -32,6 +32,7 @@ ap.add_argument('--formats', default='A4 & US Letter')
 ap.add_argument('--level', type=int, default=1, choices=[1, 2, 3])
 ap.add_argument('--photo-x', type=float, default=0.5)
 ap.add_argument('--sketch-y', type=int, default=502, help='top of the sketch image; raise it (e.g. 548) when the title takes 2 lines')
+ap.add_argument('--sketch-h', type=int, default=444, help='max sketch height (tall garments like pants: ~410)')
 ap.add_argument('--logo', default=os.path.join(REPO, 'brand', 'sewcraftly-icon.png'))
 ap.add_argument('--fonts', default=None, help='dir containing Poppins-*.ttf')
 a = ap.parse_args()
@@ -68,8 +69,8 @@ d.rectangle((PW, 0, PW + 10, H), fill=TERRA)
 sk = Image.open(a.sketch).convert('RGB')
 SW = 400
 sk = sk.resize((SW, round(sk.height * SW / sk.width)), Image.LANCZOS)
-if sk.height > 444:  # keep the card above the bottom bar
-    SH = 444
+if sk.height > a.sketch_h:  # keep the card above the bottom bar
+    SH = a.sketch_h
     sk = sk.resize((round(sk.width * SH / sk.height), SH), Image.LANCZOS)
 sx, sy = W - 62 - SW + (SW - sk.width) // 2, a.sketch_y
 card = (W - 62 - SW - 28, sy - 28, W - 62 + 28, sy + sk.height + 28)

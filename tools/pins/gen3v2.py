@@ -74,8 +74,8 @@ def bbox(x0, x1):
     sub = arr[:, x0:x1]; r = np.where(sub.any(axis=1))[0]; c = np.where(sub.any(axis=0))[0]
     return (x0 + int(c.min()) - 4, int(r.min()) - 4, x0 + int(c.max()) + 4, int(r.max()) + 4)
 fb = bbox(0, int(gap[0]) + 1); bb = bbox(int(gap[1]), sk.width)
-front = make_sticker(fb, int((fb[3]-fb[1]) * 215 / (fb[2]-fb[0])))
-back = make_sticker(bb, int((bb[3]-bb[1]) * 190 / (bb[2]-bb[0])))
+front = make_sticker(fb, int((fb[3]-fb[1]) * int(os.environ.get('FW', '215')) / (fb[2]-fb[0])))
+back = make_sticker(bb, int((bb[3]-bb[1]) * int(os.environ.get('BW', '190')) / (bb[2]-bb[0])))
 bg.alpha_composite(front, (int(os.environ.get('FX', '690')), int(os.environ.get('FY', '380'))))
 bg.alpha_composite(back, (int(os.environ.get('BX', '720')), int(os.environ.get('BY', '560'))))
 
