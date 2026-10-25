@@ -81,7 +81,9 @@ bg.alpha_composite(back, (int(os.environ.get('BX', '720')), int(os.environ.get('
 
 d = ImageDraw.Draw(bg)
 cx = 835
-def ctext(y, t, font, fill=K):
+TXT = tuple(int(v) for v in os.environ['TEXT'].split(',')) if os.environ.get('TEXT') else K  # white on dark/busy photo backgrounds
+def ctext(y, t, font, fill=None):
+    fill = fill or TXT
     w = d.textlength(t, font=font)
     d.text((cx - w / 2, y), t, font=font, fill=fill)
 
