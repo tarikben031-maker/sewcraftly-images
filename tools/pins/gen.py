@@ -52,6 +52,7 @@ if A.sketch:
     sticker=st.crop(outl.getbbox())
 strip=cov.crop((1165,5,1195,795)); px=list(strip.get_flattened_data()) if hasattr(strip,'get_flattened_data') else list(strip.getdata())
 BAND=tuple(int(statistics.median(c[i] for c in px)) for i in range(3))
+if os.environ.get('BAND'): BAND=tuple(int(v) for v in os.environ['BAND'].split(','))  # new-style covers have no colour band
 
 def fit(img,mw,mh):
     s=min(mw/img.width,mh/img.height); return img.resize((int(img.width*s),int(img.height*s)),Image.LANCZOS)
@@ -122,7 +123,8 @@ def pin1(out):
         dd=ImageDraw.Draw(det); f=POP('SemiBold',18)
         dd.rounded_rectangle((20,18,20+dd.textlength('DETAILS',font=f)+28,54),radius=18,fill=K); dd.text((34,22),'DETAILS',font=f,fill='white')
         im.alpha_composite(det,(510,y0))
-        ctext(d,1395,f"Sizes {A.sizes}  ·  PDF  ·  sewcraftlypatterns.com",POP('Medium',30))
+        ctext(d,1392,f"Sizes {A.sizes}  ·  PDF  ·  Free download",POP('Medium',30))
+        ctext(d,1440,"Enter sewcraftlypatterns.com  ·  Enjoy your free pattern",POP('SemiBold',26))
         im.convert('RGB').save(out,quality=92); return
     det=noise_bg(BAND,(430,y1-y0),0.06).convert('RGBA')
     top=int(sticker.height*0.42); al=sticker.split()[3].crop((0,0,sticker.width,top))
