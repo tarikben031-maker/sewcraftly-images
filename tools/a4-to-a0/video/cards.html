@@ -1,0 +1,34 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box}body{margin:0;width:1280px;height:720px;overflow:hidden;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#14213D}
+.card{position:absolute;inset:0;display:none;background:radial-gradient(900px 500px at 50% 0,#F8EEF0 0,#FBF8F8 60%,#F6F1F2 100%)}
+.card.on{display:block}
+.logo{position:absolute;left:56px;top:40px;height:84px}
+.pill{display:inline-flex;align-items:center;gap:10px;background:#14213D;color:#fff;border-radius:999px;padding:12px 24px;font-weight:700;font-size:24px}
+.pill i{width:12px;height:12px;border-radius:50%;background:#E8A0B0;display:block}
+h1{font-size:68px;line-height:1.05;margin:0 0 18px;letter-spacing:-.02em}
+.sub{font-size:27px;color:#5A5360;margin:0 0 30px}
+.chip{display:inline-block;border:2px solid #E7DCDF;background:#fff;color:#7A2340;font-weight:700;border-radius:999px;padding:8px 16px;font-size:19px;margin-right:10px}
+#intro .txt{position:absolute;left:56px;top:170px;width:640px}
+#intro .vis{position:absolute;right:70px;top:120px;width:470px;height:480px}
+.a4{position:absolute;width:62px;height:86px;background:#fff;border:2px solid #14213D;border-radius:4px}
+.arrow{position:absolute;left:236px;top:212px;font-size:64px;color:#7A2340;font-weight:800}
+.big{position:absolute;left:316px;top:20px;width:150px;height:440px;background:#fff;border:3px solid #7A2340;border-radius:8px;box-shadow:0 20px 40px -20px rgba(20,33,61,.45)}
+.big:after{content:"A0";position:absolute;left:0;right:0;top:46%;text-align:center;font-weight:800;font-size:42px;color:#7A2340}
+#result .img{position:absolute;right:120px;top:40px;height:640px;border:3px solid #14213D;border-radius:10px;background:#fff;box-shadow:0 30px 60px -30px rgba(20,33,61,.5)}
+#result .txt{position:absolute;left:70px;top:190px;width:640px}
+#outro{text-align:center}
+#outro .wrap{position:absolute;left:0;right:0;top:150px}
+#outro img{height:96px;margin-bottom:26px}
+#outro .url{font-size:62px;font-weight:800;color:#7A2340;margin:16px 0 22px;letter-spacing:-.01em}
+</style></head><body>
+<div class="card" id="intro"><img class="logo" src="logo.png">
+<div class="txt"><h1>A4 to A0 Pattern Converter</h1><p class="sub">Turn a tiled PDF sewing pattern into one copy shop file</p><div><span class="chip">Free</span><span class="chip">No upload</span><span class="chip">100% scale</span></div><div style="margin-top:34px"><span class="pill"><i></i>sewcraftlypatterns.com</span></div></div>
+<div class="vis" id="grid"><div class="arrow">→</div><div class="big"></div></div></div>
+<div class="card" id="result"><img class="logo" src="logo.png">
+<div class="txt"><h1>One piece.<br>Exactly 100%.</h1><p class="sub">781 × 2363 mm, ready for the copy shop</p><span class="pill"><i></i>sewcraftlypatterns.com</span></div>
+<img class="img" src="result.png"></div>
+<div class="card" id="outro"><div class="wrap"><img src="icon.png"><h1>Try it free</h1><div class="url">sewcraftlypatterns.com</div><p class="sub">A4 to A0 pattern converter · link in the description</p></div></div>
+<script>const g=document.getElementById('grid');for(let r=0;r<4;r++)for(let c=0;c<3;c++){const d=document.createElement('div');d.className='a4';d.style.left=(c*70)+'px';d.style.top=(60+r*94)+'px';g.appendChild(d)}
+window.setT=function(t){/* t in seconds */const tiles=[...document.querySelectorAll('#grid .a4')];const big=document.querySelector('.big');const arrow=document.querySelector('.arrow');tiles.forEach((d,i)=>{const appear=Math.min(1,Math.max(0,(t-0.3-i*0.12)/0.35));const move=Math.min(1,Math.max(0,(t-4.2-i*0.08)/0.9));const e=move*move*(3-2*move);const c=i%3,r=Math.floor(i/3);const x0=c*70,y0=60+r*94,x1=316+12+c*42,y1=20+40+r*96;d.style.opacity=appear*(1-0.85*e);d.style.left=(x0+(x1-x0)*e)+'px';d.style.top=(y0+(y1-y0)*e)+'px';d.style.transform='scale('+(1-0.35*e)+')'});const b=Math.min(1,Math.max(0,(t-3.4)/0.6));big.style.opacity=b;big.style.transform='translateY('+(20*(1-b))+'px)';arrow.style.opacity=Math.min(1,Math.max(0,(t-2.8)/0.5));document.querySelector('#intro .txt').style.opacity=Math.min(1,t/0.6)};
+function show(id){document.querySelectorAll('.card').forEach(c=>c.classList.toggle('on',c.id===id))}</script>
+</body></html>
