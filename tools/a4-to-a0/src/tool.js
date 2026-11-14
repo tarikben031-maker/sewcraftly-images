@@ -79,12 +79,18 @@ var cands=trimCands(tiles);S.cands=cands;
 var tr0={l:strongest(cands.l,S.mw),r:strongest(cands.r,S.mw),t:strongest(cands.t,S.mh),b:strongest(cands.b,S.mh)};
 var best=chooseLayout(tiles,tr0),tr=tr0;
 for(var it=0;it<2;it++){var Lb=layout(tiles.length,best.c,best.o===1,[]),v=bestPair(tiles,Lb,"v",cands.l,cands.r),h=bestPair(tiles,Lb,"h",cands.t,cands.b);
-var tr1={l:v.t>=6&&v.r>.4?v.a:tr.l,r:v.t>=6&&v.r>.4?v.b:tr.r,t:h.t>=6&&h.r>.4?h.a:tr.t,b:h.t>=6&&h.r>.4?h.b:tr.b};
+var cv=pairScore(tiles,Lb,"v",tr.l,tr.r),ch=pairScore(tiles,Lb,"h",tr.t,tr.b);function better(bp,cur){return bp.a&&bp.t>=6&&bp.r>.4&&bp.sc>=cur.sc+Math.max(6,.15*cur.t)}
+var lockX=locked(tr.l,S.mh)&&locked(tr.r,S.mh),lockY=locked(tr.t,S.mw)&&locked(tr.b,S.mw);
+var tr1={l:!lockX&&better(v,cv)?v.a:tr.l,r:!lockX&&better(v,cv)?v.b:tr.r,t:!lockY&&better(h,ch)?h.a:tr.t,b:!lockY&&better(h,ch)?h.b:tr.b};
 if(tr1.l===tr.l&&tr1.r===tr.r&&tr1.t===tr.t&&tr1.b===tr.b)break;tr=tr1;best=chooseLayout(tiles,tr)}
 if(best.tt<8){/* nothing on the joins to compare: start from a near-square layout */var twp=tr.r.v-tr.l.v,thp=tr.b.v-tr.t.v;best={c:Math.max(1,Math.min(tiles.length,Math.round(Math.sqrt(tiles.length*thp/Math.max(1,twp))))),o:0,tt:0,sc:0}}
 S.auto.c=best.c;S.auto.colMajor=best.o===1;S.auto.trim=tr;S.auto.sc=best.sc;
-S.tiles=tiles.slice();S.order=tiles.slice();S.c=best.c;S.colMajor=best.o===1;S.trimSrc=tr;
+S.tiles=tiles.slice();S.c=best.c;S.colMajor=best.o===1;S.trimSrc=tr;S.order=best.tt>=8?blanks(tiles.slice(),best.c,best.o===1,tr):tiles.slice();S.auto.order=S.order.slice();
 }
+function orderScore(o,c,cm,tr){var L=layout(o.length,c,cm,[]),sm=seamsOf(L),sc=0;sm.V.forEach(function(p){var A=o[p[0]],B=o[p[1]];if(A<0||B<0)return;var r=seamScore(A,B,"v",tr.r.v,tr.l.v);sc+=2*r[0]-r[1]});sm.H.forEach(function(p){var A=o[p[0]],B=o[p[1]];if(A<0||B<0)return;var r=seamScore(A,B,"h",tr.b.v,tr.t.v);sc+=2*r[0]-r[1]});return sc}
+function blanks(o,c,cm,tr){/* layouts with empty squares: add an empty cell where it makes the joins match clearly better */var base=orderScore(o,c,cm,tr),lim=Math.max(c,Math.ceil(o.length/c));for(var it=0;it<lim;it++){var bi=-1,bk=1,bs=-1e9;for(var i=0;i<o.length;i++)for(var k=1;k<c;k++){var q=o.slice();for(var j=0;j<k;j++)q.splice(i,0,-1);var v=orderScore(q,c,cm,tr);if(v>bs){bs=v;bi=i;bk=k}}if(bi<0||bs<base+6)break;for(var j2=0;j2<bk;j2++)o.splice(bi,0,-1);base=bs}return o}
+function locked(c,span){return c&&c.k==="line"&&c.s>=.8*span}
+function pairScore(tiles,L,dir,a,b){var sm=seamsOf(L),P=dir==="v"?sm.V:sm.H,m=0,tt=0;P.forEach(function(p){var r=seamScore(tiles[p[0]],tiles[p[1]],dir,b.v,a.v);m+=r[0];tt+=r[1]});return {m:m,t:tt,sc:2*m-tt}}
 function strongest(L,span){var b=null;L.forEach(function(x){if(x.k==="line"&&x.s>=4*R&&(!b||x.s>b.s))b=x});if(b)return b;L.forEach(function(x){if(x.k==="clip"&&!b)b=x});if(b)return b;L.forEach(function(x){if(x.k==="line"&&(!b||x.s>b.s))b=x});return b||L[L.length-1]}
 function chooseLayout(tiles,tr){var best=null,Nt=tiles.length;for(var o=0;o<2;o++)for(var c=1;c<=Nt;c++){var L=layout(Nt,c,o===1,[]),sm=seamsOf(L),m=0,tt=0;
 sm.V.forEach(function(p){var r=seamScore(tiles[p[0]],tiles[p[1]],"v",tr.r.v,tr.l.v);m+=r[0];tt+=r[1]});sm.H.forEach(function(p){var r=seamScore(tiles[p[0]],tiles[p[1]],"h",tr.b.v,tr.t.v);m+=r[0];tt+=r[1]});
@@ -109,8 +115,8 @@ var cells=[],k,rr,cc,R2;if(!colMajor){R2=Math.ceil(n/c);for(k=0;k<n;k++)cells.pu
 R2=c;cc=Math.ceil(n/R2);for(k=0;k<n;k++)cells.push({i:k,row:k%R2,col:Math.floor(k/R2)});return {cells:cells,cols:cc,rows:R2}}
 function seamsOf(L){var map={},V=[],H=[];L.cells.forEach(function(e){map[e.row+","+e.col]=e.i});L.cells.forEach(function(e){var r=map[e.row+","+(e.col+1)],b=map[(e.row+1)+","+e.col];if(r!=null)V.push([e.i,r]);if(b!=null)H.push([e.i,b])});return {V:V,H:H}}
 function runs(pi,dir,pos){var key=pi+dir+pos,ch=S.cache[key];if(ch)return ch;var m=S.pg[pi].mask,c=S.cons,mw=S.mw,mh=S.mh,res=[],a=-1,i,q,lo,hi;
-if(dir==="v"){pos=Math.max(0,Math.min(mw-1,pos));lo=Math.round(.1*mh);hi=Math.round(.9*mh);for(i=lo;i<=hi;i++){q=i*mw+pos;var d=i<hi&&!c[q]&&((m[q>>3]>>(q&7))&1);if(d){if(a<0)a=i}else if(a>=0){res.push([(a+i-1)/2,i-a]);a=-1}}}
-else{pos=Math.max(0,Math.min(mh-1,pos));lo=Math.round(.1*mw);hi=Math.round(.9*mw);for(i=lo;i<=hi;i++){q=pos*mw+i;var d2=i<hi&&!c[q]&&((m[q>>3]>>(q&7))&1);if(d2){if(a<0)a=i}else if(a>=0){res.push([(a+i-1)/2,i-a]);a=-1}}}
+if(dir==="v"){pos=Math.max(0,Math.min(mw-1,pos));lo=Math.round(.03*mh);hi=Math.round(.97*mh);for(i=lo;i<=hi;i++){q=i*mw+pos;var d=i<hi&&!c[q]&&((m[q>>3]>>(q&7))&1);if(d){if(a<0)a=i}else if(a>=0){res.push([(a+i-1)/2,i-a]);a=-1}}}
+else{pos=Math.max(0,Math.min(mh-1,pos));lo=Math.round(.03*mw);hi=Math.round(.97*mw);for(i=lo;i<=hi;i++){q=pos*mw+i;var d2=i<hi&&!c[q]&&((m[q>>3]>>(q&7))&1);if(d2){if(a<0)a=i}else if(a>=0){res.push([(a+i-1)/2,i-a]);a=-1}}}
 S.cache[key]=res;return res}
 function near(L,v,tol){var b=null,bd=tol;for(var i=0;i<L.length;i++){var d=Math.abs(L[i][0]-v);if(d<=bd){bd=d;b=L[i]}}return b}
 function matchDir(a1,a2,b1,d,b2){var m=0,tt=0,mx=3*R;for(var i=0;i<a1.length;i++){var s=a1[i];if(s[1]>mx)continue;tt++;var n2=near(a2,s[0],d*1.6),sl=n2?(s[0]-n2[0])/d:0;var pred=s[0]+sl*2*d,tol=.5*R+Math.abs(sl)*d*.6+1+(n2?0:R*.6);if(near(b1,pred,tol)||(b2&&near(b2,s[0]+sl*3*d,tol+2)))m++}return [m,tt]}
@@ -130,7 +136,7 @@ for(j=0;j<chh;j++)for(i=0;i<cw;i++){var v=255-lum(d,(j*cw+i)*4)/1000;if(v>40){pr
 var n2=profs[0].length,mn=new Float64Array(n2),k,best=null;
 if(c.k==="line"){for(k=0;k<n2;k++){var v2=Infinity;profs.forEach(function(p){v2=Math.min(v2,p[k])});mn[k]=v2}var mx=0;for(k=0;k<n2;k++)mx=Math.max(mx,mn[k]);
 /* the peak nearest the centre */
-var thr=.5*mx,cen=n2/2,bk=-1;for(k=0;k<n2;k++)if(mn[k]>=thr&&(bk<0||Math.abs(k-cen)<Math.abs(bk-cen)))bk=k;var s=0,wt=0;if(bk>=0){var a=bk,b=bk;while(a>0&&mn[a-1]>=.15*mx)a--;while(b<n2-1&&mn[b+1]>=.15*mx)b++;for(k=a;k<=b;k++){s+=mn[k]*(k+.5);wt+=mn[k]}}best=wt>0?a0+s/wt/HR:pos}
+var thr=.5*mx,cen=n2/2,bk=-1;for(k=0;k<n2;k++)if(mn[k]>=thr&&(bk<0||Math.abs(k-cen)<Math.abs(bk-cen)))bk=k;var s=0,wt=0;if(bk>=0){var a=bk,b=bk;while(a>0&&mn[a-1]>=.15*mx)a--;while(b<n2-1&&mn[b+1]>=.15*mx)b++;for(k=a;k<=b;k++){s+=mn[k]*(k+.5);wt+=mn[k]}}best=wt>0?a0+s/wt/HR:pos;if(wt>0){var ea=a0+a/HR,eb=a0+(b+1)/HR,lim2=ax==="x"?S.W:S.H;if((side==="l"||side==="t")&&ea<=.06)best=0;if((side==="r"||side==="b")&&eb>=lim2-.06)best=lim2}}
 else{/* clip: outermost ink across pages */var lowSide=(side==="l"||side==="t"),ext=null;profs.forEach(function(p){var mxp=0;for(k=0;k<n2;k++)mxp=Math.max(mxp,p[k]);var th=Math.max(.5,.02*mxp);if(lowSide){for(k=0;k<n2;k++)if(p[k]>th){ext=ext==null?k:Math.min(ext,k);break}}else{for(k=n2-1;k>=0;k--)if(p[k]>th){ext=ext==null?k+1:Math.max(ext,k+1);break}}});best=ext==null?pos:a0+ext/HR}
 res[side]=best}
 /* margins in mm */
@@ -211,11 +217,11 @@ $("pages").addEventListener("change",function(){var L=parsePages(this.value);if(
 $("cols").addEventListener("input",function(){var v=parseInt(this.value,10);if(v>=1){S.c=v;update()}});
 $("order").addEventListener("change",function(){S.colMajor=this.value==="c";$("colsL").textContent=S.colMajor?t("rowsL"):t("colsL");update()});
 ["l","t","r","b"].forEach(function(k){$("t"+k).addEventListener("input",function(){var v=parseFloat(String(this.value).replace(",","."));if(v>=0&&v<(k==="l"||k==="r"?S.W:S.H)/2){S.trim[k]=v;update()}})});
-$("redo").onclick=function(){S.trim=JSON.parse(JSON.stringify(S.autoTrim));S.tiles=S.auto.tiles.slice();S.order=S.tiles.slice();S.c=S.auto.c;S.colMajor=S.auto.colMajor;fillUI();update()};
+$("redo").onclick=function(){S.trim=JSON.parse(JSON.stringify(S.autoTrim));S.tiles=S.auto.tiles.slice();S.order=(S.auto.order||S.tiles).slice();S.c=S.auto.c;S.colMajor=S.auto.colMajor;fillUI();update()};
 ["out","mg"].forEach(function(k){$(k).addEventListener("change",update)});
 $("seams").onclick=function(){S.seams=S.seams===false;this.classList.toggle("on",S.seams!==false);drawPreview()};
 $("zoom").onclick=function(){var w=$("pvw");w.classList.toggle("z");this.classList.toggle("on",w.classList.contains("z"))};
 $("pv").addEventListener("click",function(e){var c=this,r=c.getBoundingClientRect(),L=grid(),tm=tileMM(),x=(e.clientX-r.left)*c.width/r.width,y=(e.clientY-r.top)*c.height/r.height,col=Math.floor(x/(tm.w*TH)),row=Math.floor(y/(tm.h*TH));var cell=L.cells.filter(function(q){return q.col===col&&q.row===row})[0];if(!cell)return;if(S.order[cell.i]<0)S.order.splice(cell.i,1);else S.order.splice(cell.i,0,-1);update()});
 $("dl").onclick=async function(){var b=this;if(b.disabled)return;b.disabled=true;var lbl=b.textContent;b.textContent=t("building");try{var bytes=await build();var blob=new Blob([bytes],{type:"application/pdf"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=S.name+"_A0.pdf";document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove()},4000);$("done").style.display="block";window.__sca0last=bytes}catch(e){console.error(e);err(t("errRead")+" ("+(e&&e.message)+")")}b.textContent=lbl;b.disabled=false};
-window.__sca0=function(){return S};window.__sca0dbg={chooseLayout:chooseLayout,layout:layout,seamsOf:seamsOf,seamScore:seamScore,runs:runs,bestPair:bestPair,matchDir:matchDir};window.__sca0build=build;
+window.__sca0=function(){return S};window.__sca0dbg={orderScore:orderScore,blanks:blanks,chooseLayout:chooseLayout,layout:layout,seamsOf:seamsOf,seamScore:seamScore,runs:runs,bestPair:bestPair,matchDir:matchDir};window.__sca0build=build;
 })();
