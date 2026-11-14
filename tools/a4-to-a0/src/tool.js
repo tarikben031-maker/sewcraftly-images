@@ -30,7 +30,7 @@ function fmt(v,d){return Number(v).toLocaleString(lang==="en"?"en-US":lang,{maxi
 /* ---------- rendering ---------- */
 async function renderCanvas(pi,scale,ox,oy,w,h){var p=await S.pdf.getPage(pi+1);var vp=p.getViewport({scale:scale,offsetX:-(ox||0),offsetY:-(oy||0)});var c=document.createElement("canvas");c.width=w;c.height=h;var x=c.getContext("2d",{willReadFrequently:true});x.fillStyle="#fff";x.fillRect(0,0,w,h);await p.render({canvasContext:x,viewport:vp,annotationMode:0}).promise;return c}
 function lum(d,j){return d[j]*299+d[j+1]*587+d[j+2]*114}
-var DARK=200000;
+var DARK=215000;
 
 /* ---------- load ---------- */
 async function openFile(f){
