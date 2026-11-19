@@ -6,9 +6,11 @@ def parts(enraw, trraw):
     ed=[b for b in E['design'] if nb(b)]; td=[b for b in T['design'] if nb(b)]
     assert 'scp-vb' in ed[2] and 'scp-vb' not in ''.join(td)
     assert sig(ed[3]).startswith('heading h3')
-    nnew=len(ed)-len(td)-2
-    reading=ed[4:4+nnew]
-    assert all(sig(b).startswith('paragraph') for b in reading),[sig(b) for b in reading]
+    reading=[]
+    for b in ed[4:]:
+        if not sig(b).startswith('paragraph'): break
+        reading.append(b)
+    assert reading
     ef=[b for b in E['questions'] if nb(b) and 'pp-faq' in b]; tf=[b for b in T['questions'] if nb(b) and 'pp-faq' in b]
     newfaq=ef[len(tf):]
     return dict(vb=ed[2],h3=ed[3],reading=reading,faq=newfaq,ntr=len(tf),nef=len(ef))
